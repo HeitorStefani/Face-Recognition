@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login com Reconhecimento Facial</title>
+    <script defer src="./face-api.min.js"></script>
+    <script defer src="./main.js"></script>
+    <style>
+        /* Definições básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container principal */
+        .login-container {
+            background-color: white;
+            width: 400px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%; /* Manter a proporção de 4:3 */
+            margin-bottom: 20px;
+        }
+
+        video, canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #accessButton {
+            background-color: #28a745;
+        }
+
+        #accessButton:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #dc3545;
+        }
+
+        /* Estilos para o seletor */
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login Facial</h1>
+        <div class="video-wrapper">
+            <video id="video" autoplay muted></video>
+            <canvas id="overlayCanvas"></canvas>
+        </div>
+        <select id="canvasToggle">
+            <option value="show">Exibir landmarks</option>
+            <option value="hide">Ocultar landmarks</option>
+        </select>
+        <button id="registerButton">Cadastrar Rosto</button>
+        <button id="accessButton">Acessar Plataforma</button>
+        <div id="message" class="message"></div>
+    </div>
+
+    <script>
+        canvasToggle.addEventListener('change', () => {
+            if (canvasToggle.value === "show") {
+                canvas.style.display = "block";
+            } else {
+                canvas.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
