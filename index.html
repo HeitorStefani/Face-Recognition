@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login com Reconhecimento Facial</title>
+    <title>Sistema de Portaria - Reconhecimento Facial</title>
     <script defer src="./face-api.min.js"></script>
     <script defer src="./main.js"></script>
     <style>
@@ -12,38 +12,54 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         body, html {
             height: 100%;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8e4d9 100%);
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 40px;
         }
 
         /* Container principal */
-        .login-container {
-            background-color: white;
-            width: 400px;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            text-align: center;
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            width: 100%;
+            max-width: 1400px;
+            min-height: 800px;
+            padding: 60px;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
         }
 
-        .login-container h1 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 24px;
+        /* Lado esquerdo - Vídeo */
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
         }
 
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 75%; /* Manter a proporção de 4:3 */
-            margin-bottom: 20px;
+            padding-bottom: 75%;
+            margin-bottom: 32px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #f5f5f5;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
         }
 
         video, canvas {
@@ -52,74 +68,398 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .video-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: rgba(107, 142, 111, 0.1);
+            border-radius: 16px;
+            border: 1px solid rgba(107, 142, 111, 0.2);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            background: #6b8e6f;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            color: #4a7c59;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Lado direito - Controles */
+        .control-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+            padding: 0 40px;
+        }
+
+        .logo-section {
+            margin-bottom: 48px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6b8e6f 0%, #4a7c59 100%);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(107, 142, 111, 0.3);
+        }
+
+        .logo-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        h1 {
+            color: #2d2d2d;
+            margin-bottom: 12px;
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: #6b6b6b;
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 48px;
+            line-height: 1.6;
+        }
+
+        /* Toggle moderno */
+        .toggle-section {
+            background: #f8f6f3;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+        }
+
+        .toggle-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b6b6b;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            font-size: 16px;
+            font-weight: 500;
+            color: #2d2d2d;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236b6b6b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            padding-right: 50px;
+        }
+
+        select:hover {
+            border-color: #6b8e6f;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #6b8e6f;
+            box-shadow: 0 0 0 4px rgba(107, 142, 111, 0.1);
+        }
+
+        /* Botões grandes */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
+            padding: 24px;
             border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:active::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        button svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        #registerButton {
+            background: linear-gradient(135deg, #d4c5b3 0%, #c4b5a3 100%);
+            color: #3d3d3d;
+            box-shadow: 0 4px 16px rgba(212, 197, 179, 0.3);
+        }
+
+        #registerButton:hover {
+            background: linear-gradient(135deg, #c4b5a3 0%, #b4a593 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(212, 197, 179, 0.4);
         }
 
         #accessButton {
-            background-color: #28a745;
+            background: linear-gradient(135deg, #6b8e6f 0%, #5a7d5e 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(107, 142, 111, 0.3);
         }
 
         #accessButton:hover {
-            background-color: #218838;
+            background: linear-gradient(135deg, #5a7d5e 0%, #4a6d4e 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(107, 142, 111, 0.4);
         }
 
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Mensagem de status grande */
         .message {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #dc3545;
+            padding: 24px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            line-height: 1.6;
         }
 
-        /* Estilos para o seletor */
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
+        .message.show {
+            opacity: 1;
+        }
+
+        .message.success {
+            background: rgba(107, 142, 111, 0.15);
+            color: #4a7c59;
+            border: 2px solid rgba(107, 142, 111, 0.3);
+        }
+
+        .message.error {
+            background: rgba(220, 53, 69, 0.15);
+            color: #c82333;
+            border: 2px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Info card no rodapé */
+        .info-card {
+            margin-top: 40px;
+            padding: 20px 24px;
+            background: rgba(107, 142, 111, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #6b8e6f;
+        }
+
+        .info-card p {
+            font-size: 14px;
+            color: #6b6b6b;
+            line-height: 1.6;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 40px;
+                min-height: auto;
+            }
+
+            .control-section {
+                padding: 0;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body, html {
+                padding: 20px;
+            }
+
+            .main-container {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            button {
+                padding: 18px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Login Facial</h1>
-        <div class="video-wrapper">
-            <video id="video" autoplay muted></video>
-            <canvas id="overlayCanvas"></canvas>
+    <div class="main-container">
+        <!-- Lado Esquerdo - Vídeo -->
+        <div class="video-section">
+            <div class="video-wrapper">
+                <video id="video" autoplay muted></video>
+                <canvas id="overlayCanvas"></canvas>
+            </div>
+            <div class="video-status">
+                <div class="status-indicator"></div>
+                <span class="status-text">Câmera ativa e pronta</span>
+            </div>
         </div>
-        <select id="canvasToggle">
-            <option value="show">Exibir landmarks</option>
-            <option value="hide">Ocultar landmarks</option>
-        </select>
-        <button id="registerButton">Cadastrar Rosto</button>
-        <button id="accessButton">Acessar Plataforma</button>
-        <div id="message" class="message"></div>
+
+        <!-- Lado Direito - Controles -->
+        <div class="control-section">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <h1>Sistema de Portaria</h1>
+                <p class="subtitle">Acesso seguro por reconhecimento facial<br>para controle de entrada e saída</p>
+            </div>
+
+            <div class="toggle-section">
+                <label class="toggle-label">Configurações de Visualização</label>
+                <select id="canvasToggle">
+                    <option value="show">Exibir detecção facial e landmarks</option>
+                    <option value="hide">Ocultar detecção facial</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button id="registerButton">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <line x1="19" y1="8" x2="19" y2="14"></line>
+                        <line x1="22" y1="11" x2="16" y2="11"></line>
+                    </svg>
+                    Cadastrar Novo Rosto
+                </button>
+                <button id="accessButton">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Acessar Sistema
+                </button>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <div class="info-card">
+                <p><strong>💡 Dica:</strong> Posicione seu rosto centralizado na câmera para melhor reconhecimento. Certifique-se de ter boa iluminação.</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        canvasToggle.addEventListener('change', () => {
-            if (canvasToggle.value === "show") {
-                canvas.style.display = "block";
-            } else {
-                canvas.style.display = "none";
-            }
+        // Adiciona animação às mensagens
+        window.addEventListener('DOMContentLoaded', () => {
+            const messageDivElement = document.getElementById('message');
+            
+            const originalInnerText = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'innerText').set;
+            Object.defineProperty(messageDivElement, 'innerText', {
+                set: function(value) {
+                    originalInnerText.call(this, value);
+                    if (value) {
+                        this.classList.add('show');
+                    } else {
+                        this.classList.remove('show');
+                    }
+                }
+            });
+
+            // Adiciona classe success/error baseado na cor
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'style') {
+                        const color = messageDivElement.style.color;
+                        messageDivElement.classList.remove('success', 'error');
+                        if (color === 'rgb(40, 167, 69)') {
+                            messageDivElement.classList.add('success');
+                        } else if (color === 'rgb(220, 53, 69)') {
+                            messageDivElement.classList.add('error');
+                        }
+                    }
+                });
+            });
+            observer.observe(messageDivElement, { attributes: true });
         });
     </script>
 </body>
